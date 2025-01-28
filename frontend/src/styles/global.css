@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', system-ui, sans-serif;
+    }
+}
+
+@layer components {
+    .prose table {
+        @apply shadow-sm rounded-lg overflow-hidden;
+    }
+
+    .prose thead {
+        @apply bg-gray-50;
+    }
+
+    .prose thead th {
+        @apply text-left text-xs font-medium text-gray-500 uppercase tracking-wider px-6 py-3;
+    }
+
+    .prose tbody tr {
+        @apply border-b border-gray-200 hover:bg-gray-50 transition-colors;
+    }
+
+    .prose tbody td {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500;
+    }
+
+    .btn {
+        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm
+               focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50 focus:ring-indigo-500;
+    }
+
+    .card {
+        @apply bg-white rounded-xl shadow-md overflow-hidden border border-gray-100
+               hover:shadow-lg transition-shadow duration-300;
+    }
+
+    .input {
+        @apply block w-full rounded-md border-gray-300 shadow-sm
+               focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* Smooth transitions */
+* {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.min-h-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}

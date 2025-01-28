@@ -1,0 +1,157 @@
+analyze_keyword_rankings_data:
+  description: >
+    As a Senior SEO Data Analyst, analyze the keyword performance data from both competitor and user rankings:
+
+    1. First analyze competitor rankings data:
+       - Use the FileReadTool to read competitor_rankings.json
+       - For each competitor domain, examine:
+         - ALL keywords
+         - ALL search volumes
+         - ALL ranking difficulties
+         - ALL total monthly clicks
+         - ALL exact cost per clicks
+         - ALL paid competitors
+       - Create detailed tables showing ALL competitor keyword metrics
+       - Identify patterns and insights across ALL competitor domains
+
+    2. Then analyze user rankings data:
+       - Use the FileReadTool to read user_rankings.json
+       - Create tables showing:
+         - ALL keywords
+         - ALL search volumes
+         - ALL ranking difficulties
+         - ALL total monthly clicks
+         - ALL exact cost per clicks
+         - ALL paid competitors
+       - Compare performance against ALL competitor benchmarks
+       - Identify ALL gaps and opportunities
+
+    3. Provide strategic recommendations:
+       - Compare user vs ALL competitor keyword targeting
+       - Highlight areas where user rankings lag behind ALL competitors
+       - Suggest specific keywords to focus on improving
+       - Recommend content and optimization strategies
+       - Set realistic ranking improvement targets
+
+    Present all findings based strictly on the real data from both ranking files, without assumptions
+    or external information.
+    Never mention the source of your data in any case. If not data found, mention "N/A" in all the fields.
+
+  expected_output: >
+    Generate an SEO Keyword Performance Analysis report.
+    Include the following sections:\n
+    1. Competitor Keyword Analysis: Create a table for each competitor (all the 5 competitors) showing
+    all 10 keywords for each competitor, Search Volume, Ranking Difficulty, Total Monthly Clicks, Exact Cost Per Click,
+    and Paid Competitors.\n
+    2. User Keyword Analysis: Create a table for user keywords showing all 10 keywords, Search Volume, Ranking Difficulty,
+    Total Monthly Clicks, Exact Cost Per Click, Exact Monthly Clicks, and Paid Competitors.\n
+    3. Comparative Analysis: Highlight key differences between competitor and user keyword performance.\n
+    4. Strategic Recommendations: Provide actionable suggestions for improving keyword rankings.
+
+
+generate_ad_copies:
+  description: >
+    Create high-performing ad copies for both Google Ads and Meta Ads platforms that increases
+    investment in Jaipuria Schools Franchise by top investors.
+
+    IMPORTANT PREPARATION STEPS:
+    1. First, thoroughly review the provided website url of Jaipuria Schools
+       - Extract key unique selling points
+       - Understand the school's history, mission, total schools, and distinctive offerings
+       - Understand 'Why Jaipuria', 'Open a Jaipuria School'
+       - Extract Awards and Recognition
+       - Get the growth story of Jaipuria Schools
+
+    2. Then, analyze the keyword data from selected_keywords_details.json to identify:
+       - High commercial intent keywords
+       - Keywords with good search volume
+       - Keywords relevant to investment in Jaipuria Schools Franchise
+
+    3. Use SerperDevTool to:
+       - Research competitor ad strategies
+       - Analyze competitor landing pages
+       - Understand search intent
+
+    4. Create ad copies that:
+       - Incorporate authentic details from the Jaipuria Schools knowledge sources
+       - Highlight the school's unique value propositions
+       - Use factual information to build credibility
+       - Focus on attracting potential franchise investors
+
+    5. For Google Ads, create 5 ad variations that:
+       - Follow the Responsive Search Ads format
+       - Include 3 headlines (30 chars max each)
+       - Have 2 descriptions (90 chars max each)
+       - Incorporate target keywords naturally
+       - Include clear calls-to-action
+       - Focus on unique value propositions
+       - Highlight key programs and accreditations
+
+    6. For Meta Ads, create 5 ad variations that:
+       - Follow Meta Ads format requirements
+       - Include primary text (125 chars max)
+       - Have compelling headlines (40 chars max)
+       - Include descriptions (30 chars max)
+       - Focus on visual-friendly messaging
+       - Create emotional connection
+       - Drive social engagement
+
+    7. For each ad copy:
+       - Include character count for each element
+       - Mark recommended combinations
+       - Add notes on targeting suggestions
+
+  expected_output: >
+    A markdown document with two main sections:
+
+    1. Google Ads Copies:
+       - 5 complete ad variations with all components
+       - Character counts for each element
+       - Recommended headline-description combinations
+       - Target keyword suggestions
+       - A/B testing notes
+
+    2. Meta Ads Copies:
+       - 5 complete ad variations with all components
+       - Character counts for each element
+       - Recommended visuals/creatives notes
+       - Audience targeting suggestions
+       - A/B testing recommendations
+
+    Format each ad copy in a clear, structured way with proper markdown formatting.
+    Include a summary of best practices and optimization tips for each platform.
+
+
+generate_blog_post_outlines:
+  description: >
+    1. First use the FileReadTool to read 2_ad_copies.md file to get the ad copies for Google Ads and Meta Ads
+    2. Then use the FileReadTool to read selected_keywords_details.json to get the details of the selected keywords
+    3. Next, ONLY from selected_keywords_details.json, choose 5 keywords that are included in the file and
+    have the potential to surpass the content, in order to create blog outlines for Jaipuria Schools:
+       - Generate a detailed blog outline designed to outperform the content.
+       - Ensure the blog outline content is factual, balanced, and avoids controversial topics.
+       - Focus exclusively on Jaipuria Schools' offerings and expertise.
+       - Incorporate insights from the analysis to enhance the outline's relevance and depth.
+    For ad copies and keyword data, use ONLY the data from the 2_ad_copies.md and selected_keywords_details.json files.
+  expected_output: >
+    A markdown document with ALL the 5 (1-5) blog post outlines tailored ONLY for 'Jaipuria Schools'.
+    DON'T promote, compare with, or mention any other institution's name.
+    Each outline must start with:
+    # Blog Outline
+    ## Keyword data:
+    - Keyword: [exact text]
+    - Search Volume: [exact number]
+    - Ranking Difficulty: [exact score]
+    - Total Monthly Clicks: [exact number]
+    - Exact Cost Per Click: [exact number]
+    - Paid Competitors: [exact number]
+
+    ## Content outline:
+    - Blog title incorporating the exact keyword
+    - Meta description
+    - Sections with proper formatting and detailed sub-headings designed to outperform the ranking URL
+    - Word count (recommend for at least 1000-1500 words) and formatting recommendations
+    - Content must be factual, non-controversial and focused on Jaipuria's expertise
+
+    Add "---" after each blog outline to separate them.
+    Do not write any thing other than the blog outlines.

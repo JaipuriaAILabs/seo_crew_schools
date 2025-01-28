@@ -1,0 +1,42 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#filter0_d)">
+    <!-- Document Base -->
+    <path d="M12 8C12 6.89543 12.8954 6 14 6H28L36 14V36C36 37.1046 35.1046 38 34 38H14C12.8954 38 12 37.1046 12 36V8Z"
+          fill="#F3F4F6"/>
+
+    <!-- Document Fold -->
+    <path d="M28 6L36 14H30C28.8954 14 28 13.1046 28 12V6Z"
+          fill="#E5E7EB"/>
+
+    <!-- Brain Circuit Lines -->
+    <path d="M18 20C18 18.8954 18.8954 18 20 18H28C29.1046 18 30 18.8954 30 20V26C30 27.1046 29.1046 28 28 28H20C18.8954 28 18 27.1046 18 26V20Z"
+          fill="#4F46E5" fillOpacity="0.1"/>
+
+    <!-- Circuit Nodes -->
+    <circle cx="20" cy="20" r="1.5" fill="#4F46E5"/>
+    <circle cx="28" cy="20" r="1.5" fill="#4F46E5"/>
+    <circle cx="24" cy="24" r="1.5" fill="#4F46E5"/>
+    <circle cx="20" cy="26" r="1.5" fill="#4F46E5"/>
+    <circle cx="28" cy="26" r="1.5" fill="#4F46E5"/>
+
+    <!-- Circuit Connections -->
+    <path d="M21.5 20H26.5M20 21.5V24.5M28 21.5V24.5M21.5 26H26.5"
+          stroke="#4F46E5" strokeWidth="1.5" strokeLinecap="round"/>
+
+    <!-- Text Lines -->
+    <path d="M18 32H30" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M18 35H26" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round"/>
+  </g>
+
+  <defs>
+    <filter id="filter0_d" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+      <feOffset dy="2"/>
+      <feGaussianBlur stdDeviation="2"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>
