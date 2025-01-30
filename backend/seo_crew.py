@@ -1,8 +1,9 @@
-from crewai import Agent, Crew, Task, LLM
-from crewai.project import CrewBase, agent, crew, task, before_kickoff
 from crewai_tools import FileReadTool, SerperDevTool, WebsiteSearchTool
+from crewai.project import CrewBase, agent, crew, task
+from crewai import Agent, Crew, Task, LLM
 from dotenv import load_dotenv
 from pathlib import Path
+import agentops
 import os
 
 load_dotenv()
@@ -20,9 +21,19 @@ gemini = LLM(
     api_key=os.getenv("GEMINI_API_KEY")
 )
 
+deepseek = LLM(
+    model="openrouter/deepseek/deepseek-r1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
+
 @CrewBase
 class SeoCrew():
     """SEO Content Generation Crew"""
+
+    agentops.init(
+        api_key=os.getenv("AGENTOPS_API_KEY"),
+        skip_auto_end_session=True
+    )
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
@@ -39,18 +50,6 @@ class SeoCrew():
         self.inputs = inputs
         super().__init__()
 
-    @before_kickoff
-    def setup(self, inputs):
-        """Initialize data before running tasks.
-
-        Args:
-            inputs (dict): The input data to be set up.
-        """
-        try:
-            self.inputs = inputs
-        except Exception as e:
-            print(f"Error during setup: {e}")
-
     @agent
     def ad_copy_specialist_agent(self) -> Agent:
         """Create an agent for generating ad copies.
@@ -61,17 +60,8 @@ class SeoCrew():
         try:
             return Agent(
                 config=self.agents_config['ad_copy_specialist'],
-                tools=[
-                    FileReadTool(
-                        name="Read selected keywords data",
-                        description="Read the selected_keywords.json file",
-                        file_path=Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json',
-                        encoding='utf-8',
-                        errors='ignore'
-                    )
-                ],
                 llm=anthropic,
-                verbose=False
+                verbose=True
             )
         except Exception as e:
             print(f"Error creating ad copy specialist agent: {e}")
@@ -86,31 +76,8 @@ class SeoCrew():
         try:
             return Agent(
                 config=self.agents_config['blog_outline_strategist'],
-                tools=[
-                    FileReadTool(
-                        name="Read ad copies data",
-                        description="Read the ad copies from 2_ad_copies.md file",
-                        file_path=str(Path('outputs') / self.user_id / 'crew' / '2_ad_copies.md'),
-                        encoding='utf-8',
-                        errors='ignore'
-                    ),
-                    FileReadTool(
-                        name="Read selected keywords data",
-                        description="Read the selected keywords details",
-                        file_path=str(Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json'),
-                        encoding='utf-8',
-                        errors='ignore'
-                    ),
-                    WebsiteSearchTool(
-                        website="https://www.jaipuriaschools.ac.in/why-jaipuria",
-                    ),
-                    WebsiteSearchTool(
-                        website="https://www.jaipuriaschools.ac.in/open-a-jaipuria-school",
-                    ),
-                    SerperDevTool(api_key=serper_api_key)
-                ],
                 llm=anthropic,
-                verbose=False
+                verbose=True
             )
         except Exception as e:
             print(f"Error creating blog outline strategist agent: {e}")
@@ -126,6 +93,22 @@ class SeoCrew():
             return Task(
                 config=self.tasks_config['generate_ad_copies'],
                 agent=self.ad_copy_specialist_agent(),
+                tools=[
+                    FileReadTool(
+                        name="Read selected keywords data",
+                        description="Read the selected_keywords.json file",
+                        file_path=Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json',
+                        encoding='utf-8',
+                        errors='ignore'
+                    ),
+                    WebsiteSearchTool(
+                        website="https://www.jaipuriaschools.ac.in/why-jaipuria",
+                    ),
+                    WebsiteSearchTool(
+                        website="https://www.jaipuriaschools.ac.in/open-a-jaipuria-school",
+                    ),
+                    SerperDevTool(api_key=serper_api_key)
+                ],
                 output_file=str(Path('outputs') / self.user_id / 'crew' / '2_ad_copies.md')
             )
         except Exception as e:
@@ -142,6 +125,22 @@ class SeoCrew():
             return Task(
                 config=self.tasks_config['generate_blog_post_outlines'],
                 agent=self.blog_outline_strategist_agent(),
+                tools=[
+                    FileReadTool(
+                        name="Read ad copies data",
+                        description="Read the ad copies from 2_ad_copies.md file",
+                        file_path=str(Path('outputs') / self.user_id / 'crew' / '2_ad_copies.md'),
+                        encoding='utf-8',
+                        errors='ignore'
+                    ),
+                    FileReadTool(
+                        name="Read selected keywords data",
+                        description="Read the selected keywords details",
+                        file_path=str(Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json'),
+                        encoding='utf-8',
+                        errors='ignore'
+                    )
+                ],
                 context=[self.generate_ad_copies_task()],
                 output_file=str(Path('outputs') / self.user_id / 'crew' / '3_blog_post_outlines.md')
             )

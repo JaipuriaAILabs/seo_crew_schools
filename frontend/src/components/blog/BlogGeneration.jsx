@@ -27,15 +27,22 @@ export default function BlogGeneration() {
                     throw new Error('Missing required parameters');
                 }
 
+                // Encode the outline properly
+                const encodedOutline = encodeURIComponent(outline);
+
                 // Call the API to generate the blog
                 const result = await generateBlog({
-                    outline: decodeURIComponent(outline), // Decode the outline
-                    userId: userId
+                    outline: encodedOutline,
+                    userId: userId // Use the userId from searchParams instead of localStorage
                 });
 
                 // Update state with the blog content and DOCX file name
-                setBlogContent(result.blogContent);
-                setDocxFile(result.docxFile);
+                if (result.status === 'success') {
+                    setBlogContent(result.markdown); // Update to use the correct property for blog content
+                    setDocxFile(result.docxFile);
+                } else {
+                    throw new Error(result.message || 'Failed to generate blog');
+                }
             } catch (err) {
                 // Set error message if an error occurs
                 setError(err.message);

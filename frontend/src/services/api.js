@@ -56,7 +56,6 @@ export const getKeywords = async () => {
             throw new Error(data.message || 'Failed to fetch keywords');
         }
 
-        console.log("API Keywords:", data.keywords);
         return data;
     } catch (error) {
         console.error('Error fetching keywords:', error);
@@ -125,48 +124,37 @@ export const runSeo = async (data) => {
 
 /**
  * Generates a blog based on the provided outline.
- * @param {Object} blogOutline - The outline for the blog.
+ * @param {Object} blogData - The data for blog generation.
  * @returns {Promise<Object>} - The generated blog content and file.
  * @throws Will throw an error if blog generation fails.
  */
-export const generateBlog = async (blogOutline) => {
+export const generateBlog = async (blogData) => {
     try {
-        const userId = localStorage.getItem('userId');
-        const response = await fetch(`${API_URL}/generate-blog/${userId}`, {
+        const response = await fetch(`${API_URL}/generate-blog/${blogData.userId}`, {
             method: 'POST',
-            headers: defaultHeaders,
-            body: JSON.stringify({ outline: blogOutline.outline })
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                outline: blogData.outline
+            })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const result = await response.json();
-
-        if (result.status === 'success') {
-            const markdownResponse = await fetch(`${API_URL}/markdown/blog_post.md/${userId}`, {
-                method: 'GET',
-                headers: { 'Accept': 'text/markdown' }
-            });
-
-            if (!markdownResponse.ok) {
-                throw new Error('Failed to fetch blog content');
-            }
-
-            const blogContent = await markdownResponse.text();
-
+        if (result.status == 'success'){
             return {
                 status: 'success',
-                blogContent,
+                message: 'Blog post generated successfully',
+                markdown: result.markdown,
                 docxFile: result.docxFile
-            };
-        } else {
+            }
+        }
+        else {
             throw new Error(result.message || 'Failed to generate blog post');
         }
     } catch (error) {
-        console.error('API Error in generateBlog:', error);
-        throw error; // Re-throw the error for further handling
+        console.error('Blog generation error:', error);
+        throw error;
     }
 };
 

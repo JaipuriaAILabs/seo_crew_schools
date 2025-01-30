@@ -1,6 +1,7 @@
 from tools.spyfu_tool import SpyfuTool
 from analysis_crew import AnalysisCrew
 from blog_writer import generate_blog
+from blog_crew import BlogCrew
 from seo_crew import SeoCrew
 from pathlib import Path
 import warnings
@@ -69,7 +70,8 @@ def run_analysis_crew(user_id: str, school_name: str, domain_url: str, output_di
         print("Fetching SpyFu data...")
         fetch_data_from_spyfu(domain_url, output_dir)
 
-        crew = AnalysisCrew(user_id, {
+        crew = AnalysisCrew({
+            'user_id': user_id,
             'school_name': school_name,
             'domain_url': domain_url,
         })
@@ -166,17 +168,54 @@ def run_seo_crew(userId: str, school_name: str, domain_url: str):
         raise
 
 
+def run_blog_crew(userId: str, outline: str):
+    """Run the blog crew.
+
+    Args:
+        userId (str): Unique identifier for the user.
+        outline (str): The outline of the blog post.
+    """
+    try:
+        print(f"Running blog crew for user: {userId}")
+        crew = BlogCrew(userId, outline)
+        crew.crew().kickoff()
+    except Exception as e:
+        print(f"Error running blog crew: {str(e)}")
+        raise
+
+
+def train_analysis_crew(userId: str, school_name: str, domain_url: str, output_dir: Path):
+    try:
+        # print("Fetching SpyFu data...")
+        # fetch_data_from_spyfu(domain_url, output_dir)
+        filename = str(output_dir / 'training.pkl')
+        inputs = {
+            'user_id': userId,
+            'school_name': school_name,
+            'domain_url': domain_url
+        }
+        print("Training analysis crew...")
+        AnalysisCrew(inputs).crew().train(n_iterations=2, filename=filename)
+
+    except Exception as e:
+        print(f"Error running analysis crew: {str(e)}")
+        raise
+
+
 if __name__ == "__main__":
     school_name = "Seth M.R. Jaipuria Schools"
     domain_url = "jaipuriaschools.ac.in"
-    output_dir = Path('outputs/bd79829f-34c1-492b-80a1-9c563b09c50b')
+    output_dir = Path('outputs/acc34af2-5b10-4c53-91c1-d94edeaf3fed')
     output_dir.mkdir(exist_ok=True)
     (output_dir / 'data').mkdir(exist_ok=True)
+    (output_dir / 'crew').mkdir(exist_ok=True)
 
     # # Step 1: Run analysis crew
     # print("\nRunning analysis crew...")
     # analysis_result = run_analysis_crew("bd79829f-34c1-492b-80a1-9c563b09c50b", school_name, domain_url, output_dir)
     # print("Analysis complete!")
+
+    # train_analysis_crew("acc34af2-5b10-4c53-91c1-d94edeaf3fed", school_name, domain_url, output_dir)
 
     # # Step 2: Show available keywords
     # print("\nAvailable keywords:")
@@ -210,10 +249,10 @@ if __name__ == "__main__":
     # print("\nSaving keyword details...")
     # save_keyword_details("bd79829f-34c1-492b-80a1-9c563b09c50b", selected_keywords)
 
-    # Step 5: Run SEO crew with selected keywords
-    print("\nRunning SEO crew for selected keywords...")
-    seo_result = run_seo_crew("bd79829f-34c1-492b-80a1-9c563b09c50b", school_name, domain_url)
-    print("SEO crew complete!")
+    # # Step 5: Run SEO crew with selected keywords
+    # print("\nRunning SEO crew for selected keywords...")
+    # seo_result = run_seo_crew("bd79829f-34c1-492b-80a1-9c563b09c50b", school_name, domain_url)
+    # print("SEO crew complete!")
 
     # # Step 6: Run blog writer crew
     # print("\nRunning blog writer")

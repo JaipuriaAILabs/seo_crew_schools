@@ -1,6 +1,6 @@
 analyze_keyword_rankings_data:
   description: >
-    As a Senior SEO Data Analyst, analyze the keyword performance data from both competitor and user rankings:
+    Comprehensive PPC keyword performance analysis with detailed strategic process:
 
     1. First analyze competitor rankings data:
        - Use the FileReadTool to read competitor_rankings.json
@@ -33,9 +33,9 @@ analyze_keyword_rankings_data:
        - Recommend content and optimization strategies
        - Set realistic ranking improvement targets
 
-    Present all findings based strictly on the real data from both ranking files, without assumptions
-    or external information.
-    Never mention the source of your data in any case. If not data found, mention "N/A" in all the fields.
+    Present all findings based strictly on the real data from both ranking files, without making any assumptions
+    or using external information.
+    Never mention the source of your data in any case.
 
   expected_output: >
     Generate an SEO Keyword Performance Analysis report.
@@ -51,8 +51,8 @@ analyze_keyword_rankings_data:
 
 generate_ad_copies:
   description: >
-    Create high-performing ad copies for both Google Ads and Meta Ads platforms that increases
-    investment in Jaipuria Schools Franchise by top investors.
+    Create high-performing ad copies for both Google Ads and Meta Ads platforms (5 for each platform)
+    that increases investment in Jaipuria Schools Franchise by top investors.
 
     IMPORTANT PREPARATION STEPS:
     1. First, thoroughly review the provided website url of Jaipuria Schools
@@ -78,7 +78,7 @@ generate_ad_copies:
        - Use factual information to build credibility
        - Focus on attracting potential franchise investors
 
-    5. For Google Ads, create 5 ad variations that:
+    5. For Google Ads, ALWAYS create and give 5 ad variations that:
        - Follow the Responsive Search Ads format
        - Include 3 headlines (30 chars max each)
        - Have 2 descriptions (90 chars max each)
@@ -87,7 +87,7 @@ generate_ad_copies:
        - Focus on unique value propositions
        - Highlight key programs and accreditations
 
-    6. For Meta Ads, create 5 ad variations that:
+    6. For Meta Ads, ALWAYS create and give 5 ad variations that:
        - Follow Meta Ads format requirements
        - Include primary text (125 chars max)
        - Have compelling headlines (40 chars max)
@@ -128,24 +128,15 @@ generate_blog_post_outlines:
     2. Then use the FileReadTool to read selected_keywords_details.json to get the details of the selected keywords
     3. Next, ONLY from selected_keywords_details.json, choose 5 keywords that are included in the file and
     have the potential to surpass the content, in order to create blog outlines for Jaipuria Schools:
-       - Generate a detailed blog outline designed to outperform the content.
+       - Generate a long and detailed blog outline designed to outperform the content.
        - Ensure the blog outline content is factual, balanced, and avoids controversial topics.
-       - Focus exclusively on Jaipuria Schools' offerings and expertise.
-       - Incorporate insights from the analysis to enhance the outline's relevance and depth.
+       - Focus exclusively on Jaipuria Schools' history, offerings, success stories and expertise.
     For ad copies and keyword data, use ONLY the data from the 2_ad_copies.md and selected_keywords_details.json files.
   expected_output: >
     A markdown document with ALL the 5 (1-5) blog post outlines tailored ONLY for 'Jaipuria Schools'.
     DON'T promote, compare with, or mention any other institution's name.
     Each outline must start with:
     # Blog Outline
-    ## Keyword data:
-    - Keyword: [exact text]
-    - Search Volume: [exact number]
-    - Ranking Difficulty: [exact score]
-    - Total Monthly Clicks: [exact number]
-    - Exact Cost Per Click: [exact number]
-    - Paid Competitors: [exact number]
-
     ## Content outline:
     - Blog title incorporating the exact keyword
     - Meta description
@@ -155,3 +146,33 @@ generate_blog_post_outlines:
 
     Add "---" after each blog outline to separate them.
     Do not write any thing other than the blog outlines.
+
+
+generate_blog_post:
+  description: >
+    Generate comprehensive and engaging blog posts designed to attract investors to open a
+    Jaipuria Schools franchise. The process involves:
+
+    1. Use the WebsiteSearchTool to gather current information about Jaipuria Schools, including
+        their history, offerings, and success stories of existing franchises.
+    2. Utilize the SerperDevTool to analyze competitor blog posts and identify best practices for
+        content structure and engagement, specifically targeting franchise opportunities.
+    3. For the provided blog outline:
+       - Research relevant statistics and expert opinions that highlight the benefits of investing
+        in a Jaipuria Schools franchise.
+       - Write a detailed blog post that follows the structure of the outline, emphasizing the value
+        proposition for potential investors.
+       - Ensure the content is SEO-optimized, factual, and engaging for the target audience of
+        investors.
+       - Incorporate the target keyword naturally throughout the post.
+       - Craft a compelling meta description to improve click-through rates and attract investor
+        interest.
+  expected_output: >
+    A well-structured blog post that effectively communicates the advantages of investing in
+    Jaipuria Schools, tailored to the interests of potential franchise investors.
+    The post should include:
+    - A clear introduction that outlines the value of the franchise opportunity.
+    - Detailed sections that cover key aspects of Jaipuria Schools, including unique offerings,
+      success stories, and market potential.
+    - A conclusion that reinforces the call to action for potential investors.
+    - SEO best practices applied throughout the content to enhance visibility and engagement.

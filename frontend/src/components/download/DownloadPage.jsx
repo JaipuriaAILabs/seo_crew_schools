@@ -35,11 +35,9 @@ export default function DownloadPage() {
         // Fetch keywords when analysis is complete
         const fetchKeywords = async () => {
             try {
-                console.log("Fetching keywords...");
                 const result = await getKeywords();
 
                 if (result.status === 'success') {
-                    console.log("Keywords fetched:", result.keywords);
                     setKeywords(result.keywords);
                     setActiveTab('keywords'); // Switch to keywords tab
                 } else {

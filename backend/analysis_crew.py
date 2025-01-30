@@ -1,7 +1,8 @@
-from pathlib import Path
-from crewai import Agent, Crew, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
+from crewai import Agent, Crew, Task, LLM
 from crewai_tools import FileReadTool
+from pathlib import Path
+import agentops
 import os
 
 # Initialize language models with API keys from environment variables
@@ -20,14 +21,24 @@ anthropic = LLM(
     api_key=os.getenv("ANTHROPIC_API_KEY")
 )
 
+deepseek = LLM(
+    model="openrouter/deepseek/deepseek-r1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
+
 @CrewBase
 class AnalysisCrew():
     """Analysis Crew for processing and analyzing data."""
 
+    agentops.init(
+        api_key=os.getenv("AGENTOPS_API_KEY"),
+        skip_auto_end_session=True
+    )
+
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
-    def __init__(self, user_id: str, inputs: dict):
+    def __init__(self, inputs: dict):
         """
         Initialize the AnalysisCrew with user-specific settings.
 
@@ -36,12 +47,11 @@ class AnalysisCrew():
             inputs (dict): The inputs required for the analysis.
         """
         try:
-            self.user_id = user_id
-            self.output_dir = Path('outputs') / str(user_id)
+            self.inputs = inputs
+            self.output_dir = Path('outputs') / str(inputs['user_id'])
             self.output_dir.mkdir(parents=True, exist_ok=True)
             (self.output_dir / 'crew').mkdir(exist_ok=True)
 
-            self.inputs = inputs
         except Exception as e:
             print(f"Error initializing AnalysisCrew: {e}")
             raise
@@ -57,24 +67,8 @@ class AnalysisCrew():
         try:
             return Agent(
                 config=self.agents_config['data_analyst'],
-                tools=[
-                    FileReadTool(
-                        name="Read competitor rankings data",
-                        description="Read the competitor_rankings.json file",
-                        file_path=self.output_dir / 'data' / 'competitor_rankings.json',
-                        encoding='utf-8',
-                        errors='ignore'
-                    ),
-                    FileReadTool(
-                        name="Read user rankings data",
-                        description="Read the user_rankings.json file",
-                        file_path=self.output_dir / 'data' / 'user_rankings.json',
-                        encoding='utf-8',
-                        errors='ignore'
-                    )
-                ],
                 llm=anthropic,
-                verbose=False
+                verbose=True
             )
         except Exception as e:
             print(f"Error creating data analyst agent: {e}")
@@ -92,6 +86,22 @@ class AnalysisCrew():
             return Task(
                 config=self.tasks_config['analyze_keyword_rankings_data'],
                 agent=self.data_analyst_agent(),
+                tools=[
+                    FileReadTool(
+                        name="Read competitor rankings data",
+                        description="Read the competitor_rankings.json file",
+                        file_path=self.output_dir / 'data' / 'competitor_rankings.json',
+                        encoding='utf-8',
+                        errors='ignore'
+                    ),
+                    FileReadTool(
+                        name="Read user rankings data",
+                        description="Read the user_rankings.json file",
+                        file_path=self.output_dir / 'data' / 'user_rankings.json',
+                        encoding='utf-8',
+                        errors='ignore'
+                    )
+                ],
                 output_file=str(self.output_dir / 'crew' / '1_analysis.md')
             )
         except Exception as e:

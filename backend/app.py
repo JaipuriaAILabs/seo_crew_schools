@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from spire.doc import Document, FileFormat
@@ -9,13 +9,15 @@ from pathlib import Path
 import shutil
 import uuid
 import os
+from urllib.parse import unquote
 
 from blog_writer import generate_blog
 from main import (
     run_analysis_crew,
     get_available_keywords,
     save_keyword_details,
-    run_seo_crew
+    run_seo_crew,
+    run_blog_crew
 )
 
 # Load environment variables
@@ -159,7 +161,7 @@ def run_analysis(data: UserData):
 
         # Generate a unique user ID
         userId = str(uuid.uuid4())
-        # Create user directories for storing outputs
+
         create_user_directory(userId)
 
         output_dir = Path('outputs') / userId
@@ -180,11 +182,13 @@ def run_analysis(data: UserData):
             with open(analysis_path, 'w', encoding='utf-8') as f:
                 f.writelines(analysis_content)
 
+        # Serve the analysis markdown file
         markdown_content = {}
         if analysis_path.exists():
             with open(analysis_path, 'r', encoding='utf-8') as f:
                 markdown_content['analysis'] = f.read()
 
+        # Convert the analysis markdown file to a DOCX file
         docx_files = {}
         for file_info in [
             ('1_analysis.md', 'analysis.docx', 'analysis')
@@ -279,40 +283,38 @@ def run_seo(userId: str, data: UserData):
 
         crew_dir = Path('outputs') / userId / 'crew'
 
-        # Clean the ad copies markdown file
-        ad_copies_path = crew_dir / '2_ad_copies.md'
-        if ad_copies_path.exists():
-            with open(ad_copies_path, 'r', encoding='utf-8') as f:
-                ad_content = f.readlines()
-            ad_content = [line for line in ad_content if line.strip() != '```markdown' and line.strip() != '```']
-            with open(ad_copies_path, 'w', encoding='utf-8') as f:
-                f.writelines(ad_content)
+        # List of markdown files to clean
+        markdown_files = [
+            ('2_ad_copies.md', 'ad'),
+            ('3_blog_post_outlines.md', 'outlines')
+        ]
+        for file_name, _ in markdown_files:
+            file_path = crew_dir / file_name
+            if file_path.exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.readlines()
+                content = [line for line in content if line.strip() != '```markdown' and line.strip() != '```']
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.writelines(content)
 
-        # Clean the blog post outlines markdown file
-        outlines_path = crew_dir / '3_blog_post_outlines.md'
-        if outlines_path.exists():
-            with open(outlines_path, 'r', encoding='utf-8') as f:
-                outlines_content = f.readlines()
-            outlines_content = [line for line in outlines_content if line.strip() != '```markdown' and line.strip() != '```']
-            with open(outlines_path, 'w', encoding='utf-8') as f:
-                f.writelines(outlines_content)
-
+        # Serve the SEO markdown files
         markdown_content = {}
-        ad_path = crew_dir / '2_ad_copies.md'
-        if ad_path.exists():
-            with open(ad_path, 'r', encoding='utf-8') as f:
-                markdown_content['ad'] = f.read()
+        markdown_files = {
+            'ad': crew_dir / '2_ad_copies.md',
+            'outlines': crew_dir / '3_blog_post_outlines.md'
+        }
+        for key, path in markdown_files.items():
+            if path.exists():
+                with open(path, 'r', encoding='utf-8') as f:
+                    markdown_content[key] = f.read()
 
-        outlines_path = crew_dir / '3_blog_post_outlines.md'
-        if outlines_path.exists():
-            with open(outlines_path, 'r', encoding='utf-8') as f:
-                markdown_content['outlines'] = f.read()
-
+        # Convert the SEO markdown files to DOCX files
         docx_files = {}
-        for file_info in [
+        file_info = [
             ('2_ad_copies.md', 'ad_copies.docx', 'ad'),
             ('3_blog_post_outlines.md', 'blog_post_outlines.docx', 'outlines')
-        ]:
+        ]
+        for file_info in file_info:
             md_file = crew_dir / file_info[0]
             if md_file.exists():
                 print(f"Converting {md_file} to {file_info[1]}")
@@ -342,29 +344,42 @@ def generate_blog_endpoint(user_id: str, data: OutlineData):
         JSONResponse: Status of the blog generation process.
     """
     try:
-        outline = data.outline
+        # Validate input
+        if not data.outline or len(data.outline) > 10000:  # Prevent extremely long outlines
+            raise HTTPException(status_code=400, detail="Invalid or too long outline")
 
+        # Decode and sanitize outline
+        outline = unquote(data.outline).strip()
+
+        # Additional validation
         if not outline:
-            raise HTTPException(status_code=400, detail='No outline provided')
+            raise HTTPException(status_code=400, detail="Empty outline")
 
         # Create user-specific directories if they don't exist
         user_dir = Path('outputs') / str(user_id)
         blogs_dir = user_dir / 'blogs'
         blogs_dir.mkdir(parents=True, exist_ok=True)
 
+        print(f"Generating blog for user {user_id} with outline: {outline}")
+
         # Generate blog using the provided outline
         result = generate_blog(outline, user_id)
 
         if result['status'] == 'success':
-            # Convert the generated blog markdown to DOCX
-            blog_md = blogs_dir / 'blog_post.md'
-            if blog_md.exists():
-                output_filename = 'blog_post.docx'
-                convert_markdown_to_docx(blog_md, output_filename, user_id)
+            markdown_content = ""
+            blog_path = blogs_dir / 'blog_post.md'
+            if blog_path.exists():
+                with open(blog_path, 'r', encoding='utf-8') as f:
+                    markdown_content = f.read()
+
+            output_filename = 'blog_post.docx'
+            if blog_path.exists():
+                convert_markdown_to_docx(blog_path, output_filename, user_id)
 
                 return JSONResponse(content={
                     'status': 'success',
                     'message': 'Blog post generated successfully',
+                    'markdown': markdown_content,
                     'docxFile': output_filename
                 })
             else:
@@ -375,8 +390,7 @@ def generate_blog_endpoint(user_id: str, data: OutlineData):
         print(f"Error in generate_blog_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/markdown/{filename}/{userId}")
-def serve_markdown(filename: str, userId: str):
+
     """Serve a markdown file for the specified user.
 
     Args:
@@ -384,25 +398,44 @@ def serve_markdown(filename: str, userId: str):
         userId (str): Unique identifier for the user.
 
     Returns:
-        JSONResponse: Content of the markdown file.
+        PlainTextResponse: Markdown file content with text/markdown content type.
+
+    Raises:
+        HTTPException: 404 if file not found, 500 for server errors.
     """
     try:
-        # Determine the correct directory based on the file type
+        # Determine the correct directory based on the file
         if filename == 'blog_post.md':
             file_path = Path('outputs') / userId / 'blogs' / filename
         else:
             file_path = Path('outputs') / userId / 'crew' / filename
 
         if not file_path.exists():
-            raise HTTPException(status_code=404, detail='File not found')
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    'status': 'error',
+                    'message': 'File not found'
+                }
+            )
 
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        return JSONResponse(content=content)
+        return PlainTextResponse(
+            content=content,
+            media_type='text/markdown'
+        )
+
     except Exception as e:
-        print(f"Error in serve_markdown: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error serving markdown: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                'status': 'error',
+                'message': str(e)
+            }
+        )
 
 @app.delete("/cleanup/{user_id}")
 def cleanup_user_data(user_id: str):
