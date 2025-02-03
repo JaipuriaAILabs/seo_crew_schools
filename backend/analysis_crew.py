@@ -48,10 +48,7 @@ class AnalysisCrew():
         """
         try:
             self.inputs = inputs
-            self.output_dir = Path('outputs') / str(inputs['user_id'])
-            self.output_dir.mkdir(parents=True, exist_ok=True)
-            (self.output_dir / 'crew').mkdir(exist_ok=True)
-
+            self.output_dir = Path('outputs') / str(self.inputs['user_id'])
         except Exception as e:
             print(f"Error initializing AnalysisCrew: {e}")
             raise

@@ -100,7 +100,7 @@ export default function InstituteForm() {
                                 className="relative"
                             >
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Institution Name
+                                    School Name
                                 </label>
                                 <div className="flex items-center">
                                     <span className="absolute left-3 text-gray-400">

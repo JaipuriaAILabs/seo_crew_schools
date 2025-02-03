@@ -7,7 +7,6 @@ import agentops
 import os
 
 load_dotenv()
-
 serper_api_key = os.getenv("SERPER_API_KEY")
 
 # Initialize LLMs with respective API keys
@@ -38,7 +37,7 @@ class SeoCrew():
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
-    def __init__(self, user_id: str, inputs: dict):
+    def __init__(self, inputs: dict):
         """
         Initialize the SeoCrew with user ID and inputs.
 
@@ -46,9 +45,13 @@ class SeoCrew():
             user_id (str): The ID of the user.
             inputs (dict): The input data for the crew.
         """
-        self.user_id = user_id
-        self.inputs = inputs
-        super().__init__()
+        try:
+            self.inputs = inputs
+            self.output_dir = Path('outputs') / str(self.inputs['user_id'])
+        except Exception as e:
+            print(f"Error initializing SeoCrew: {e}")
+            raise
+
 
     @agent
     def ad_copy_specialist_agent(self) -> Agent:
@@ -65,6 +68,7 @@ class SeoCrew():
             )
         except Exception as e:
             print(f"Error creating ad copy specialist agent: {e}")
+            raise
 
     @agent
     def blog_outline_strategist_agent(self) -> Agent:
@@ -81,6 +85,7 @@ class SeoCrew():
             )
         except Exception as e:
             print(f"Error creating blog outline strategist agent: {e}")
+            raise
 
     @task
     def generate_ad_copies_task(self) -> Task:
@@ -97,7 +102,7 @@ class SeoCrew():
                     FileReadTool(
                         name="Read selected keywords data",
                         description="Read the selected_keywords.json file",
-                        file_path=Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json',
+                        file_path=self.output_dir / 'data' / 'selected_keywords_details.json',
                         encoding='utf-8',
                         errors='ignore'
                     ),
@@ -109,10 +114,11 @@ class SeoCrew():
                     ),
                     SerperDevTool(api_key=serper_api_key)
                 ],
-                output_file=str(Path('outputs') / self.user_id / 'crew' / '2_ad_copies.md')
+                output_file=str(self.output_dir / 'crew' / '2_ad_copies.md')
             )
         except Exception as e:
             print(f"Error generating ad copies task: {e}")
+            raise
 
     @task
     def generate_blog_post_outlines_task(self) -> Task:
@@ -129,23 +135,24 @@ class SeoCrew():
                     FileReadTool(
                         name="Read ad copies data",
                         description="Read the ad copies from 2_ad_copies.md file",
-                        file_path=str(Path('outputs') / self.user_id / 'crew' / '2_ad_copies.md'),
+                        file_path=self.output_dir / 'crew' / '2_ad_copies.md',
                         encoding='utf-8',
                         errors='ignore'
                     ),
                     FileReadTool(
                         name="Read selected keywords data",
                         description="Read the selected keywords details",
-                        file_path=str(Path('outputs') / self.user_id / 'data' / 'selected_keywords_details.json'),
+                        file_path=self.output_dir / 'data' / 'selected_keywords_details.json',
                         encoding='utf-8',
                         errors='ignore'
                     )
                 ],
                 context=[self.generate_ad_copies_task()],
-                output_file=str(Path('outputs') / self.user_id / 'crew' / '3_blog_post_outlines.md')
+                output_file=str(self.output_dir / 'crew' / '3_blog_post_outlines.md')
             )
         except Exception as e:
             print(f"Error generating blog post outlines task: {e}")
+            raise
 
     @crew
     def crew(self) -> Crew:
@@ -162,3 +169,4 @@ class SeoCrew():
             )
         except Exception as e:
             print(f"Error creating crew: {e}")
+            raise

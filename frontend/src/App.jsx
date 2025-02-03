@@ -1,20 +1,23 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import ErrorBoundary from './components/ErrorBoundary';
+
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LoginPage from './components/auth/LoginPage';
+import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPassword from './components/auth/ResetPassword';
+import SignUpPage from './components/auth/SignUpPage';
+import VerifyOTP from './components/auth/VerifyOTP';
+
+import Header from './components/common/Header';
 import Hero from './components/home/Hero';
 import Features from './components/home/Features';
 import ProcessFlow from './components/home/ProcessFlow';
 import InstituteForm from './components/forms/InstituteForm';
 import DownloadPage from './components/download/DownloadPage';
-import ErrorBoundary from './components/ErrorBoundary';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import LoginPage from './components/auth/LoginPage';
-import Header from './components/common/Header';
-import ForgotPassword from './components/auth/ForgotPassword';
-import ResetPassword from './components/auth/ResetPassword';
 import BlogGeneration from './components/blog/BlogGeneration';
-import SignUpPage from './components/auth/SignUpPage';
-import VerifyOTP from './components/auth/VerifyOTP';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 // PrivateRoute component
 function PrivateRoute({ children }) {
@@ -93,4 +96,3 @@ function App() {
 }
 
 export default App;
-

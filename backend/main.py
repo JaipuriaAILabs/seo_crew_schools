@@ -1,7 +1,6 @@
 from tools.spyfu_tool import SpyfuTool
 from analysis_crew import AnalysisCrew
 from blog_writer import generate_blog
-from blog_crew import BlogCrew
 from seo_crew import SeoCrew
 from pathlib import Path
 import warnings
@@ -158,47 +157,14 @@ def run_seo_crew(userId: str, school_name: str, domain_url: str):
     """
     try:
         print(f"Running SEO crew for user: {userId}")
-        crew = SeoCrew(userId, {
+        crew = SeoCrew({
+            'user_id': userId,
             'school_name': school_name,
             'domain_url': domain_url
         })
         crew.crew().kickoff()
     except Exception as e:
         print(f"Error running SEO crew: {str(e)}")
-        raise
-
-
-def run_blog_crew(userId: str, outline: str):
-    """Run the blog crew.
-
-    Args:
-        userId (str): Unique identifier for the user.
-        outline (str): The outline of the blog post.
-    """
-    try:
-        print(f"Running blog crew for user: {userId}")
-        crew = BlogCrew(userId, outline)
-        crew.crew().kickoff()
-    except Exception as e:
-        print(f"Error running blog crew: {str(e)}")
-        raise
-
-
-def train_analysis_crew(userId: str, school_name: str, domain_url: str, output_dir: Path):
-    try:
-        # print("Fetching SpyFu data...")
-        # fetch_data_from_spyfu(domain_url, output_dir)
-        filename = str(output_dir / 'training.pkl')
-        inputs = {
-            'user_id': userId,
-            'school_name': school_name,
-            'domain_url': domain_url
-        }
-        print("Training analysis crew...")
-        AnalysisCrew(inputs).crew().train(n_iterations=2, filename=filename)
-
-    except Exception as e:
-        print(f"Error running analysis crew: {str(e)}")
         raise
 
 

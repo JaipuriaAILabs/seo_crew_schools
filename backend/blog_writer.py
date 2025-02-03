@@ -180,6 +180,6 @@ def generate_blog(blog_outline, user_id):
 if __name__ == "__main__":
     try:
         blog_outline = input("Enter the blog outline: ")
-        generate_blog(blog_outline, "acc34af2-5b10-4c53-91c1-d94edeaf3fed")
+        generate_blog(blog_outline, "be16622a-ba35-4664-809c-f3d6bc6c19b5")
     except Exception as e:
         print(f"Error in main execution: {str(e)}")

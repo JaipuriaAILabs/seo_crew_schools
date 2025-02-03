@@ -37,9 +37,9 @@ class SpyfuTool(BaseTool):
         """
         try:
             if analysis_type.lower() == 'competitors':
-                result = self._get_top_competitors(domain)
+                result = self._get_top_ppc_competitors(domain)
             elif analysis_type.lower() == 'rankings':
-                result = self._get_just_made_it_keywords(domain)
+                result = self._get_ppc_research(domain)
             else:
                 return json.dumps({"error": "Invalid analysis_type. Use 'competitors' or 'rankings'"})
 
@@ -80,102 +80,6 @@ class SpyfuTool(BaseTool):
             str: The cleaned domain URL.
         """
         return domain.replace('https://', '').replace('http://', '').strip('/ ')
-
-    def _get_top_competitors(self, domain: str) -> str:
-        """Get top SEO competitors data.
-
-        Args:
-            domain (str): The domain to analyze.
-
-        Returns:
-            str: JSON string containing the top competitors data or error message.
-        """
-        try:
-            with contextlib.closing(http.client.HTTPSConnection("www.spyfu.com")) as conn:
-                headers = self._get_auth_headers()
-                clean_domain = self._clean_domain(domain)
-
-                url = (
-                    f"/apis/competitors_api/v2/seo/getTopCompetitors?"
-                    f"domain={clean_domain}&"
-                    f"startingRow=2&"
-                    f"pageSize=5&"
-                    f"countryCode=IN"
-                )
-
-                conn.request("GET", url, headers=headers)
-                res = conn.getresponse()
-                data = res.read()
-
-                if res.status == 200:
-                    return data.decode("utf-8")
-                else:
-                    error_msg = f"Error getting competitors: {res.status} - {data.decode('utf-8')}"
-                    print(f"SpyFu API Error: {error_msg}")
-                    return json.dumps({"error": error_msg})
-
-        except Exception as e:
-            error_msg = f"Error in competitors request: {str(e)}"
-            print(error_msg)
-            return json.dumps({"error": error_msg})
-
-    def _get_just_made_it_keywords(self, domain: str) -> str:
-        """Get newly ranking keywords data with filtered fields.
-
-        Args:
-            domain (str): The domain to analyze.
-
-        Returns:
-            str: JSON string containing the newly ranked keywords data or error message.
-        """
-        try:
-            with contextlib.closing(http.client.HTTPSConnection("www.spyfu.com")) as conn:
-                headers = self._get_auth_headers()
-                clean_domain = self._clean_domain(domain)
-
-                url = (
-                    f"/apis/serp_api/v2/seo/getNewlyRankedKeywords?"
-                    f"query={clean_domain}&"
-                    f"sortBy=RankChange&"
-                    f"sortOrder=Descending&"
-                    f"startingRow=1&"
-                    f"pageSize=10&"
-                    f"countryCode=IN&"
-                )
-
-                conn.request("GET", url, headers=headers)
-                res = conn.getresponse()
-                data = res.read()
-
-                if res.status == 200:
-                    full_data = json.loads(data.decode("utf-8"))
-                    filtered_results = [
-                        {
-                            'keyword': result.get('keyword'),
-                            'topRankedUrl': result.get('topRankedUrl'),
-                            'rank': result.get('rank'),
-                            'searchVolume': result.get('searchVolume'),
-                            'keywordDifficulty': result.get('keywordDifficulty'),
-                            'seoClicks': result.get('seoClicks')
-                        }
-                        for result in full_data.get('results', [])
-                    ]
-
-                    filtered_data = {
-                        'resultCount': full_data.get('resultCount'),
-                        'results': filtered_results
-                    }
-
-                    return json.dumps(filtered_data, indent=2)
-                else:
-                    error_msg = f"Error getting new rankings: {res.status} - {data.decode('utf-8')}"
-                    print(f"SpyFu API Error: {error_msg}")
-                    return json.dumps({"error": error_msg})
-
-        except Exception as e:
-            error_msg = f"Error in new rankings request: {str(e)}"
-            print(error_msg)
-            return json.dumps({"error": error_msg})
 
     def _get_top_ppc_competitors(self, domain: str) -> str:
         """Get top PPC competitors data.

@@ -1,7 +1,6 @@
 analyze_keyword_rankings_data:
   description: >
     Comprehensive PPC keyword performance analysis with detailed strategic process:
-
     1. First analyze competitor rankings data:
        - Use the FileReadTool to read competitor_rankings.json
        - For each competitor domain, examine:
@@ -13,7 +12,6 @@ analyze_keyword_rankings_data:
          - ALL paid competitors
        - Create detailed tables showing ALL competitor keyword metrics
        - Identify patterns and insights across ALL competitor domains
-
     2. Then analyze user rankings data:
        - Use the FileReadTool to read user_rankings.json
        - Create tables showing:
@@ -25,18 +23,15 @@ analyze_keyword_rankings_data:
          - ALL paid competitors
        - Compare performance against ALL competitor benchmarks
        - Identify ALL gaps and opportunities
-
     3. Provide strategic recommendations:
        - Compare user vs ALL competitor keyword targeting
        - Highlight areas where user rankings lag behind ALL competitors
        - Suggest specific keywords to focus on improving
        - Recommend content and optimization strategies
        - Set realistic ranking improvement targets
-
     Present all findings based strictly on the real data from both ranking files, without making any assumptions
     or using external information.
     Never mention the source of your data in any case.
-
   expected_output: >
     Generate an SEO Keyword Performance Analysis report.
     Include the following sections:\n
@@ -53,7 +48,6 @@ generate_ad_copies:
   description: >
     Create high-performing ad copies for both Google Ads and Meta Ads platforms (5 for each platform)
     that increases investment in Jaipuria Schools Franchise by top investors.
-
     IMPORTANT PREPARATION STEPS:
     1. First, thoroughly review the provided website url of Jaipuria Schools
        - Extract key unique selling points
@@ -61,23 +55,19 @@ generate_ad_copies:
        - Understand 'Why Jaipuria', 'Open a Jaipuria School'
        - Extract Awards and Recognition
        - Get the growth story of Jaipuria Schools
-
     2. Then, analyze the keyword data from selected_keywords_details.json to identify:
        - High commercial intent keywords
        - Keywords with good search volume
        - Keywords relevant to investment in Jaipuria Schools Franchise
-
     3. Use SerperDevTool to:
        - Research competitor ad strategies
        - Analyze competitor landing pages
        - Understand search intent
-
     4. Create ad copies that:
        - Incorporate authentic details from the Jaipuria Schools knowledge sources
        - Highlight the school's unique value propositions
        - Use factual information to build credibility
        - Focus on attracting potential franchise investors
-
     5. For Google Ads, ALWAYS create and give 5 ad variations that:
        - Follow the Responsive Search Ads format
        - Include 3 headlines (30 chars max each)
@@ -86,7 +76,6 @@ generate_ad_copies:
        - Include clear calls-to-action
        - Focus on unique value propositions
        - Highlight key programs and accreditations
-
     6. For Meta Ads, ALWAYS create and give 5 ad variations that:
        - Follow Meta Ads format requirements
        - Include primary text (125 chars max)
@@ -95,29 +84,24 @@ generate_ad_copies:
        - Focus on visual-friendly messaging
        - Create emotional connection
        - Drive social engagement
-
     7. For each ad copy:
        - Include character count for each element
        - Mark recommended combinations
        - Add notes on targeting suggestions
-
   expected_output: >
     A markdown document with two main sections:
-
     1. Google Ads Copies:
        - 5 complete ad variations with all components
        - Character counts for each element
        - Recommended headline-description combinations
        - Target keyword suggestions
        - A/B testing notes
-
     2. Meta Ads Copies:
        - 5 complete ad variations with all components
        - Character counts for each element
        - Recommended visuals/creatives notes
        - Audience targeting suggestions
        - A/B testing recommendations
-
     Format each ad copy in a clear, structured way with proper markdown formatting.
     Include a summary of best practices and optimization tips for each platform.
 
@@ -143,36 +127,5 @@ generate_blog_post_outlines:
     - Sections with proper formatting and detailed sub-headings designed to outperform the ranking URL
     - Word count (recommend for at least 1000-1500 words) and formatting recommendations
     - Content must be factual, non-controversial and focused on Jaipuria's expertise
-
     Add "---" after each blog outline to separate them.
     Do not write any thing other than the blog outlines.
-
-
-generate_blog_post:
-  description: >
-    Generate comprehensive and engaging blog posts designed to attract investors to open a
-    Jaipuria Schools franchise. The process involves:
-
-    1. Use the WebsiteSearchTool to gather current information about Jaipuria Schools, including
-        their history, offerings, and success stories of existing franchises.
-    2. Utilize the SerperDevTool to analyze competitor blog posts and identify best practices for
-        content structure and engagement, specifically targeting franchise opportunities.
-    3. For the provided blog outline:
-       - Research relevant statistics and expert opinions that highlight the benefits of investing
-        in a Jaipuria Schools franchise.
-       - Write a detailed blog post that follows the structure of the outline, emphasizing the value
-        proposition for potential investors.
-       - Ensure the content is SEO-optimized, factual, and engaging for the target audience of
-        investors.
-       - Incorporate the target keyword naturally throughout the post.
-       - Craft a compelling meta description to improve click-through rates and attract investor
-        interest.
-  expected_output: >
-    A well-structured blog post that effectively communicates the advantages of investing in
-    Jaipuria Schools, tailored to the interests of potential franchise investors.
-    The post should include:
-    - A clear introduction that outlines the value of the franchise opportunity.
-    - Detailed sections that cover key aspects of Jaipuria Schools, including unique offerings,
-      success stories, and market potential.
-    - A conclusion that reinforces the call to action for potential investors.
-    - SEO best practices applied throughout the content to enhance visibility and engagement.

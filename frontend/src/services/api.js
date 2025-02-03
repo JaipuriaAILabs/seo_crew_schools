@@ -1,6 +1,5 @@
 // Define the API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
-import { supabase } from '../lib/supabase';
 
 // Default headers for API requests
 const defaultHeaders = {
@@ -132,9 +131,7 @@ export const generateBlog = async (blogData) => {
     try {
         const response = await fetch(`${API_URL}/generate-blog/${blogData.userId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: defaultHeaders,
             body: JSON.stringify({
                 outline: blogData.outline
             })

@@ -1,15 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from spire.doc import Document, FileFormat
+from urllib.parse import unquote
+from pydantic import BaseModel
 from dotenv import load_dotenv
 from threading import Thread
 from pathlib import Path
 import shutil
 import uuid
 import os
-from urllib.parse import unquote
 
 from blog_writer import generate_blog
 from main import (
@@ -60,7 +60,6 @@ def create_user_directory(userId):
         data_dir = user_dir / 'data'
         blogs_dir = user_dir / 'blogs'
 
-        # Create directories if they do not exist
         user_dir.mkdir(parents=True, exist_ok=True)
         crew_dir.mkdir(exist_ok=True)
         data_dir.mkdir(exist_ok=True)
@@ -104,7 +103,7 @@ def convert_markdown_to_docx(markdown_file, output_filename, userId):
         doc.SaveToFile(str(output_path), FileFormat.Docx2016)
         doc.Dispose()
 
-        print(f"✓ Saved to: {output_path}")
+        print(f"✅ Saved to: {output_path}")
         return output_path
 
     except Exception as e:
@@ -344,10 +343,6 @@ def generate_blog_endpoint(user_id: str, data: OutlineData):
         JSONResponse: Status of the blog generation process.
     """
     try:
-        # Validate input
-        if not data.outline or len(data.outline) > 10000:  # Prevent extremely long outlines
-            raise HTTPException(status_code=400, detail="Invalid or too long outline")
-
         # Decode and sanitize outline
         outline = unquote(data.outline).strip()
 
@@ -389,53 +384,6 @@ def generate_blog_endpoint(user_id: str, data: OutlineData):
     except Exception as e:
         print(f"Error in generate_blog_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
-    """Serve a markdown file for the specified user.
-
-    Args:
-        filename (str): Name of the markdown file to serve.
-        userId (str): Unique identifier for the user.
-
-    Returns:
-        PlainTextResponse: Markdown file content with text/markdown content type.
-
-    Raises:
-        HTTPException: 404 if file not found, 500 for server errors.
-    """
-    try:
-        # Determine the correct directory based on the file
-        if filename == 'blog_post.md':
-            file_path = Path('outputs') / userId / 'blogs' / filename
-        else:
-            file_path = Path('outputs') / userId / 'crew' / filename
-
-        if not file_path.exists():
-            raise HTTPException(
-                status_code=404,
-                detail={
-                    'status': 'error',
-                    'message': 'File not found'
-                }
-            )
-
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        return PlainTextResponse(
-            content=content,
-            media_type='text/markdown'
-        )
-
-    except Exception as e:
-        print(f"Error serving markdown: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail={
-                'status': 'error',
-                'message': str(e)
-            }
-        )
 
 @app.delete("/cleanup/{user_id}")
 def cleanup_user_data(user_id: str):
