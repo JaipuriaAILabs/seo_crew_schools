@@ -171,7 +171,7 @@ def run_analysis(data: UserData):
             auto_start_session=False,
             skip_auto_end_session=True
         )
-        session = agentops.start_session(tags=["testing"])
+        session = agentops.start_session(tags=["production"])
 
         # Start the analysis process in a separate thread
         result = Thread(target=run_analysis_crew, args=(userId, institution_name, domain_url, output_dir))
