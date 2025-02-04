@@ -3,13 +3,17 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai import Agent, Crew, Task, LLM
 from dotenv import load_dotenv
 from pathlib import Path
-import agentops
 import os
 
 load_dotenv()
 serper_api_key = os.getenv("SERPER_API_KEY")
 
 # Initialize LLMs with respective API keys
+openai = LLM(
+    model="gpt-4o",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
 anthropic = LLM(
     model="claude-3-5-sonnet-20241022",
     api_key=os.getenv("ANTHROPIC_API_KEY")
@@ -28,11 +32,6 @@ deepseek = LLM(
 @CrewBase
 class SeoCrew():
     """SEO Content Generation Crew"""
-
-    agentops.init(
-        api_key=os.getenv("AGENTOPS_API_KEY"),
-        skip_auto_end_session=True
-    )
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
@@ -63,8 +62,8 @@ class SeoCrew():
         try:
             return Agent(
                 config=self.agents_config['ad_copy_specialist'],
-                llm=anthropic,
-                verbose=True
+                llm=openai,
+                verbose=False
             )
         except Exception as e:
             print(f"Error creating ad copy specialist agent: {e}")
@@ -81,7 +80,7 @@ class SeoCrew():
             return Agent(
                 config=self.agents_config['blog_outline_strategist'],
                 llm=anthropic,
-                verbose=True
+                verbose=False
             )
         except Exception as e:
             print(f"Error creating blog outline strategist agent: {e}")

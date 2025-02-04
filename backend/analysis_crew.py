@@ -2,7 +2,6 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai import Agent, Crew, Task, LLM
 from crewai_tools import FileReadTool
 from pathlib import Path
-import agentops
 import os
 
 # Initialize language models with API keys from environment variables
@@ -29,11 +28,6 @@ deepseek = LLM(
 @CrewBase
 class AnalysisCrew():
     """Analysis Crew for processing and analyzing data."""
-
-    agentops.init(
-        api_key=os.getenv("AGENTOPS_API_KEY"),
-        skip_auto_end_session=True
-    )
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
@@ -65,10 +59,11 @@ class AnalysisCrew():
             return Agent(
                 config=self.agents_config['data_analyst'],
                 llm=anthropic,
-                verbose=True
+                verbose=False
             )
         except Exception as e:
             print(f"Error creating data analyst agent: {e}")
+
             raise
 
     @task

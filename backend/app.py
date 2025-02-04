@@ -10,14 +10,14 @@ from pathlib import Path
 import shutil
 import uuid
 import os
+import agentops
 
 from blog_writer import generate_blog
 from main import (
     run_analysis_crew,
     get_available_keywords,
     save_keyword_details,
-    run_seo_crew,
-    run_blog_crew
+    run_seo_crew
 )
 
 # Load environment variables
@@ -165,12 +165,24 @@ def run_analysis(data: UserData):
 
         output_dir = Path('outputs') / userId
 
+        # Initialize AgentOps
+        agentops.init(
+            api_key=os.getenv("AGENTOPS_API_KEY"),
+            auto_start_session=False,
+            skip_auto_end_session=True
+        )
+        session = agentops.start_session(tags=["testing"])
+
         # Start the analysis process in a separate thread
         result = Thread(target=run_analysis_crew, args=(userId, institution_name, domain_url, output_dir))
         result.start()
         result.join()
 
         print("Analysis crew run complete")
+
+        # Store the session for later use
+        app.state.sessions = getattr(app.state, 'sessions', {})
+        app.state.sessions[userId] = session
 
         # Clean the analysis markdown file
         analysis_path = output_dir / 'crew' / '1_analysis.md'
@@ -275,13 +287,26 @@ def run_seo(userId: str, data: UserData):
         if not userId:
             raise HTTPException(status_code=400, detail='User ID is required')
 
+        # Get the existing session if available
+        session = getattr(app.state, 'sessions', {}).get(userId)
+
+
         # Start the SEO process in a separate thread
         result = Thread(target=run_seo_crew, args=(userId, institution_name, domain_url))
         result.start()
         result.join()
 
-        crew_dir = Path('outputs') / userId / 'crew'
+        # Clean up the agentops session
+        if session:
+            print("❗Cleaning up agentops session")
+            session.end_session('Success')
+            print("✅ Session ended with success state")
+            if hasattr(app.state, 'sessions'):
+                print("❗Popping session from app.state.sessions")
+                app.state.sessions.pop(userId, None)
+                print("✅ Session popped from app.state.sessions")
 
+        crew_dir = Path('outputs') / userId / 'crew'
         # List of markdown files to clean
         markdown_files = [
             ('2_ad_copies.md', 'ad'),
