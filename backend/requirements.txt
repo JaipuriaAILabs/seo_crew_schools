@@ -7,3 +7,4 @@ Spire.Doc==12.12.0
 crewai==0.98.0
 crewai-tools==0.17.0
 uvicorn==0.30.5
+agentops==0.3.26
