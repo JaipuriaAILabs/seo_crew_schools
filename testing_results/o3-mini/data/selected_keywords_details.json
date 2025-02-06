@@ -1,0 +1,42 @@
+{
+  "education franchise india": {
+    "keyword": "education franchise india",
+    "searchVolume": 50,
+    "rankingDifficulty": 7,
+    "totalMonthlyClicks": 50,
+    "exactCostPerClick": 1.65,
+    "paidCompetitors": 4
+  },
+  "ib schools near me": {
+    "keyword": "ib schools near me",
+    "searchVolume": 1600,
+    "rankingDifficulty": 18,
+    "totalMonthlyClicks": 1600,
+    "exactCostPerClick": 0.62,
+    "paidCompetitors": 1
+  },
+  "best schools in gurgaon": {
+    "keyword": "best schools in gurgaon",
+    "searchVolume": 400,
+    "rankingDifficulty": 13,
+    "totalMonthlyClicks": 400,
+    "exactCostPerClick": 0.93,
+    "paidCompetitors": 3
+  },
+  "top school franchise in india": {
+    "keyword": "top school franchise in india",
+    "searchVolume": 155,
+    "rankingDifficulty": null,
+    "totalMonthlyClicks": 155,
+    "exactCostPerClick": 1.15,
+    "paidCompetitors": null
+  },
+  "best ib schools in gurgaon": {
+    "keyword": "best ib schools in gurgaon",
+    "searchVolume": 80,
+    "rankingDifficulty": null,
+    "totalMonthlyClicks": 80,
+    "exactCostPerClick": 0.58,
+    "paidCompetitors": 1
+  }
+}
