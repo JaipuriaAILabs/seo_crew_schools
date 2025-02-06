@@ -6,7 +6,7 @@ import os
 
 # Initialize language models with API keys from environment variables
 openai = LLM(
-    model="gpt-4o",
+    model="o3-mini-2025-01-31",
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
@@ -58,7 +58,7 @@ class AnalysisCrew():
         try:
             return Agent(
                 config=self.agents_config['data_analyst'],
-                llm=anthropic,
+                llm=openai,
                 verbose=False
             )
         except Exception as e:

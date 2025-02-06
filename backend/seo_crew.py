@@ -10,7 +10,7 @@ serper_api_key = os.getenv("SERPER_API_KEY")
 
 # Initialize LLMs with respective API keys
 openai = LLM(
-    model="gpt-4o",
+    model="o3-mini-2025-01-31",
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
@@ -79,7 +79,7 @@ class SeoCrew():
         try:
             return Agent(
                 config=self.agents_config['blog_outline_strategist'],
-                llm=anthropic,
+                llm=openai,
                 verbose=False
             )
         except Exception as e:
