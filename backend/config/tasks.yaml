@@ -42,7 +42,8 @@ analyze_keyword_rankings_data:
     Total Monthly Clicks, Exact Cost Per Click, Exact Monthly Clicks, and Paid Competitors.\n
     3. Comparative Analysis: Highlight key differences between competitor and user keyword performance.\n
     4. Strategic Recommendations: Provide actionable suggestions for improving keyword rankings.
-
+    In your FINAL ANSWER, ALWAYS include the markdown content of the report.
+    NEVER tell that 'Please see above' or similar things. You MUST include the report in your FINAL ANSWER.
 
 generate_ad_copies:
   description: >
@@ -104,7 +105,8 @@ generate_ad_copies:
        - A/B testing recommendations
     Format each ad copy in a clear, structured way with proper markdown formatting.
     Include a summary of best practices and optimization tips for each platform.
-
+    In your FINAL ANSWER, ALWAYS include the markdown content of ALL THE ad copies for each platform.
+    NEVER tell that 'Please see above' or similar things. You MUST include the ad copies in your FINAL ANSWER.
 
 generate_blog_post_outlines:
   description: >
@@ -121,7 +123,6 @@ generate_blog_post_outlines:
     DON'T promote, compare with, or mention any other institution's name.
     Each outline must start with:
     # Blog Outline
-    ## Content outline:
     - Blog title incorporating the exact keyword
     - Meta description
     - Sections with proper formatting and detailed sub-headings designed to outperform the ranking URL
@@ -129,3 +130,5 @@ generate_blog_post_outlines:
     - Content must be factual, non-controversial and focused on Jaipuria's expertise
     Add "---" after each blog outline to separate them.
     Do not write any thing other than the blog outlines.
+    In your FINAL ANSWER, ALWAYS include the markdown content of ALL THE 5 blog outlines.
+    NEVER tell that 'Please see above' or similar things. You MUST include the blog outlines in your FINAL ANSWER.
