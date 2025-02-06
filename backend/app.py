@@ -165,13 +165,13 @@ def run_analysis(data: UserData):
 
         output_dir = Path('outputs') / userId
 
-        # Initialize AgentOps
-        agentops.init(
-            api_key=os.getenv("AGENTOPS_API_KEY"),
-            auto_start_session=False,
-            skip_auto_end_session=True
-        )
-        session = agentops.start_session(tags=["production"])
+        # # Initialize AgentOps
+        # agentops.init(
+        #     api_key=os.getenv("AGENTOPS_API_KEY"),
+        #     auto_start_session=False,
+        #     skip_auto_end_session=True
+        # )
+        # session = agentops.start_session(tags=["production"])
 
         # Start the analysis process in a separate thread
         result = Thread(target=run_analysis_crew, args=(userId, institution_name, domain_url, output_dir))
@@ -180,9 +180,9 @@ def run_analysis(data: UserData):
 
         print("Analysis crew run complete")
 
-        # Store the session for later use
-        app.state.sessions = getattr(app.state, 'sessions', {})
-        app.state.sessions[userId] = session
+        # # Store the session for later use
+        # app.state.sessions = getattr(app.state, 'sessions', {})
+        # app.state.sessions[userId] = session
 
         # Clean the analysis markdown file
         analysis_path = output_dir / 'crew' / '1_analysis.md'
@@ -287,8 +287,8 @@ def run_seo(userId: str, data: UserData):
         if not userId:
             raise HTTPException(status_code=400, detail='User ID is required')
 
-        # Get the existing session if available
-        session = getattr(app.state, 'sessions', {}).get(userId)
+        # # Get the existing session if available
+        # session = getattr(app.state, 'sessions', {}).get(userId)
 
 
         # Start the SEO process in a separate thread
@@ -296,15 +296,15 @@ def run_seo(userId: str, data: UserData):
         result.start()
         result.join()
 
-        # Clean up the agentops session
-        if session:
-            print("❗Cleaning up agentops session")
-            session.end_session('Success')
-            print("✅ Session ended with success state")
-            if hasattr(app.state, 'sessions'):
-                print("❗Popping session from app.state.sessions")
-                app.state.sessions.pop(userId, None)
-                print("✅ Session popped from app.state.sessions")
+        # # Clean up the agentops session
+        # if session:
+        #     print("❗Cleaning up agentops session")
+        #     session.end_session('Success')
+        #     print("✅ Session ended with success state")
+        #     if hasattr(app.state, 'sessions'):
+        #         print("❗Popping session from app.state.sessions")
+        #         app.state.sessions.pop(userId, None)
+        #         print("✅ Session popped from app.state.sessions")
 
         crew_dir = Path('outputs') / userId / 'crew'
         # List of markdown files to clean
