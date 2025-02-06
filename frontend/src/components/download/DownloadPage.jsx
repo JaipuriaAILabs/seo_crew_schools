@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -22,6 +22,68 @@ export default function DownloadPage() {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    // Progress bar refs and state
+    const [progress, setProgress] = useState(0);
+    const MIN_SIMULATION_TIME = 150000;
+    const startTimeRef = useRef(null);
+    const progressIntervalRef = useRef(null);
+    const processCompleteRef = useRef(false);
+    const progressRef = useRef(null);
+
+    /**
+     * Manages progress animation during loading
+     */
+    useEffect(() => {
+        if (isLoading) {
+            startTimeRef.current = Date.now();
+            processCompleteRef.current = false;
+
+            progressIntervalRef.current = setInterval(() => {
+                const elapsedTime = Date.now() - startTimeRef.current;
+
+                setProgress((prevProgress) => {
+                    // If process is complete, aim to reach 100%
+                    if (processCompleteRef.current) {
+                        if (prevProgress >= 100) {
+                            clearInterval(progressIntervalRef.current);
+                            return 100;
+                        }
+                        return prevProgress + Math.random() * 10;
+                    }
+
+                    if (elapsedTime < MIN_SIMULATION_TIME) {
+                        // Slow, gradual progress
+                        const timeProgress = (elapsedTime / MIN_SIMULATION_TIME) * 100;
+                        return Math.min(timeProgress, 95);
+                    }
+
+                    return 100;
+                });
+
+                // Auto-complete after full progress or time
+                if (progress >= 100) {
+                    clearInterval(progressIntervalRef.current);
+                }
+            }, 500);
+        }
+
+        return () => {
+            if (progressIntervalRef.current) {
+                clearInterval(progressIntervalRef.current);
+            }
+        };
+    }, [isLoading]);
+
+    // Add effect to scroll to progress bar when it becomes visible
+    useEffect(() => {
+        if (isLoading && progressRef.current) {
+            progressRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    }, [isLoading]);
 
     useEffect(() => {
         const state = location.state;
@@ -93,6 +155,12 @@ export default function DownloadPage() {
             });
 
             if (result.status === 'success') {
+                // Mark process as complete
+                processCompleteRef.current = true;
+
+                // Ensure progress reaches 100%
+                setProgress(100);
+
                 if (result.markdown?.ad) {
                     setAdContent(result.markdown.ad);
                 }
@@ -186,32 +254,32 @@ export default function DownloadPage() {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
                     <button
                         onClick={() => handleNavigation('/')}
-                        className="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors"
+                        className="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg shadow-md hover:bg-gray-50 transition-colors text-sm sm:text-base"
                     >
                         <span>← Go Back Home</span>
                     </button>
-                    <h1 className="text-4xl font-bold text-gray-900">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center">
                         Generated Content
                     </h1>
-                    <div className="w-[120px]"></div> {/* Spacer for centering */}
+                    <div className="w-[120px] hidden sm:block"></div> {/* Spacer for centering */}
                 </div>
 
-                <p className="text-center mt-2 mb-8 text-lg text-gray-600">
+                <p className="text-center mt-2 mb-6 sm:mb-8 text-base sm:text-lg text-gray-600">
                     Content for {location.state?.institution}
                 </p>
 
                 {error && (
                     <div className="mt-4 p-4 bg-red-50 rounded-md">
-                        <p className="text-red-700">{error}</p>
+                        <p className="text-sm sm:text-base text-red-700">{error}</p>
                     </div>
                 )}
 
-                <div className="top-20 z-10 flex justify-center space-x-4 py-4 bg-gradient-to-br from-indigo-50/80 via-white/80 to-purple-50/80 backdrop-blur-sm rounded-lg shadow-md">
+                <div className="top-20 z-10 flex justify-center space-x-2 sm:space-x-4 py-4 bg-gradient-to-br from-indigo-50/80 via-white/80 to-purple-50/80 backdrop-blur-sm rounded-lg shadow-md overflow-x-auto">
                     {analysisContent && (
                         <TabButton
                             id="analysis"
@@ -249,12 +317,12 @@ export default function DownloadPage() {
                 </div>
 
                 <div className="mt-4">
-                    <div className="bg-white rounded-lg shadow-xl min-h-[600px]">
+                    <div className="bg-white rounded-lg shadow-xl min-h-[600px] p-4 sm:p-6 lg:p-8">
                         {activeTab === 'analysis' && analysisContent && (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="p-6 prose max-w-none"
+                                className="prose prose-sm sm:prose max-w-none"
                             >
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {analysisContent}
@@ -263,7 +331,7 @@ export default function DownloadPage() {
                                     <div className="mt-4 text-center">
                                         <button
                                             onClick={() => handleDownload(downloadFiles.analysis)}
-                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                                            className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm sm:text-base"
                                         >
                                             Download Analysis Report
                                         </button>
@@ -273,7 +341,7 @@ export default function DownloadPage() {
                         )}
 
                         {activeTab === 'keywords' && Object.keys(keywords).length > 0 && (
-                            <div className="p-6">
+                            <div>
                                 <KeywordSelection
                                     keywords={keywords}
                                     onSubmit={handleKeywordSubmit}
@@ -288,7 +356,7 @@ export default function DownloadPage() {
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="p-6 prose max-w-none"
+                                className="prose prose-sm sm:prose max-w-none"
                             >
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {adContent}
@@ -297,7 +365,7 @@ export default function DownloadPage() {
                                     <div className="mt-4 text-center">
                                         <button
                                             onClick={() => handleDownload(downloadFiles.ad)}
-                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                                            className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm sm:text-base"
                                         >
                                             Download Ad Copies
                                         </button>
@@ -307,8 +375,8 @@ export default function DownloadPage() {
                         )}
 
                         {activeTab === 'outlines' && blogOutlines.length > 0 && (
-                            <div className="p-6">
-                                <div className="flex justify-center space-x-2 mb-6">
+                            <div>
+                                <div className="sticky top-20 z-10 flex justify-center space-x-2 sm:space-x-4 mb-6 py-4 bg-white bg-opacity-10 overflow-x-auto">
                                     {blogOutlines.map((_, index) => (
                                         <BlogTabButton
                                             key={index}
@@ -321,39 +389,64 @@ export default function DownloadPage() {
                                     key={activeBlogTab}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="prose max-w-none"
+                                    className="prose prose-sm sm:prose max-w-none pt-6"
                                 >
-                                    <div className="flex justify-between items-start mb-4">
-                                        <h2 className="text-2xl font-bold">
-                                            Blog Outline {activeBlogTab + 1}
-                                        </h2>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {`# Blog Outline ${blogOutlines[activeBlogTab]}`}
+                                    </ReactMarkdown>
+                                    <div className="flex flex-col sm:flex-row justify-end items-center gap-4 mt-6">
                                         <button
                                             onClick={() => handleGenerateBlog(blogOutlines[activeBlogTab])}
-                                            className="px-4 py-2 text-sm font-medium text-white
-                                                     bg-gradient-to-r from-green-600 to-green-500
-                                                     rounded-md hover:from-green-700 hover:to-green-600
+                                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 text-sm sm:text-base font-medium text-white
+                                                     bg-gradient-to-r from-blue-600 to-blue-500
+                                                     rounded-md hover:from-blue-700 hover:to-blue-600
                                                      focus:outline-none focus:ring-2 focus:ring-offset-2
-                                                     focus:ring-green-500 transition-all
+                                                     focus:ring-blue-500 transition-all
                                                      shadow-md hover:shadow-lg
                                                      transform hover:-translate-y-0.5"
                                         >
                                             Generate Blog Post
+                                            <span className="inline-flex items-center justify-center px-2 py-1
+                                                         text-xs font-bold leading-none text-blue-100
+                                                         bg-blue-700 bg-opacity-50 rounded-full">
+                                                #{activeBlogTab + 1}
+                                            </span>
                                         </button>
+                                        {downloadFiles.outlines && (
+                                            <button
+                                                onClick={() => handleDownload(downloadFiles.outlines)}
+                                                className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-md
+                                                         hover:bg-green-700 transition-colors text-sm sm:text-base"
+                                            >
+                                                Download All Blog Outlines
+                                            </button>
+                                        )}
                                     </div>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                        {`# Blog Outline ${activeBlogTab + 1}\n\n${blogOutlines[activeBlogTab]}`}
-                                    </ReactMarkdown>
                                 </motion.div>
-                                {downloadFiles.outlines && (
-                                    <div className="mt-4 text-center">
-                                        <button
-                                            onClick={() => handleDownload(downloadFiles.outlines)}
-                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                                        >
-                                            Download All Blog Outlines
-                                        </button>
+                            </div>
+                        )}
+
+                        {/* Progress bar */}
+                        {isLoading && (
+                            <div ref={progressRef} className="mt-8 sm:mt-10">
+                                <div className="w-full bg-transparent border-2 border-indigo-200 rounded-full p-1">
+                                    <div className="w-full bg-gray-200 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${progress}%` }}
+                                            transition={{
+                                                duration: 0.5,
+                                                ease: "easeInOut"
+                                            }}
+                                            className="bg-gradient-to-r from-indigo-600 to-purple-600 h-2 sm:h-3 rounded-full"
+                                        />
                                     </div>
-                                )}
+                                </div>
+                                <div className="text-center mt-2">
+                                    <span className="text-xs sm:text-sm font-semibold text-gray-700">
+                                        {Math.round(progress)}%
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>

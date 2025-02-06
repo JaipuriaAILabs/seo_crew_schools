@@ -66,25 +66,23 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center pb-20 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="max-w-md w-full"
+                className="max-w-md w-full mx-4 sm:mx-auto"
             >
-                {/* Logo/Header */}
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-                    <p className="mt-2 text-gray-600">Sign in to access SEO Blog Writer</p>
+                <div className="text-center mb-6 sm:mb-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back</h2>
+                    <p className="mt-2 text-sm sm:text-base text-gray-600">Sign in to access SEO Blog Writer</p>
                 </div>
 
-                {/* Login Form */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white rounded-xl shadow-xl p-8 border border-gray-100"
+                    className="bg-white rounded-xl shadow-xl p-6 sm:p-8 border border-gray-100"
                 >
                     <form onSubmit={handleLogin} className="space-y-6">
                         {error && (
@@ -100,8 +98,9 @@ export default function LoginPage() {
                             <input
                                 type="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)} // Update email state on change
-                                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200
+                                         text-sm sm:text-base
                                          focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                          transition-colors"
                                 required
@@ -115,8 +114,9 @@ export default function LoginPage() {
                             <input
                                 type="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)} // Update password state on change
-                                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200
+                                         text-sm sm:text-base
                                          focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                          transition-colors"
                                 required
@@ -126,8 +126,9 @@ export default function LoginPage() {
                         <div className="flex flex-col space-y-3">
                             <button
                                 type="submit"
-                                disabled={loading} // Disable button while loading
-                                className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg
+                                disabled={loading}
+                                className="w-full py-2 sm:py-3 px-4 bg-indigo-600 text-white rounded-lg
+                                         text-sm sm:text-base
                                          hover:bg-indigo-700 transition-colors flex items-center justify-center
                                          disabled:opacity-50 disabled:cursor-not-allowed"
                             >

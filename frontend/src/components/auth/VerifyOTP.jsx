@@ -65,40 +65,41 @@ export default function VerifyOTP() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="max-w-md w-full"
+                className="max-w-md w-full mx-4 sm:mx-auto"
             >
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Verify Your Email</h2>
-                    <p className="mt-2 text-gray-600">Enter the verification code sent to your email</p>
+                <div className="text-center mb-6 sm:mb-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Verify Your Email</h2>
+                    <p className="mt-2 text-sm sm:text-base text-gray-600">Enter the verification code sent to your email</p>
                 </div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white rounded-xl shadow-xl p-8 border border-gray-100"
+                    className="bg-white rounded-xl shadow-xl p-6 sm:p-8 border border-gray-100"
                 >
-                    <form onSubmit={handleVerify} className="space-y-6">
+                    <form onSubmit={handleVerify} className="space-y-4 sm:space-y-6">
                         {error && (
-                            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-                                {error} {/* Display error message if exists */}
+                            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-xs sm:text-sm">
+                                {error}
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                                 Verification Code
                             </label>
                             <input
                                 type="text"
-                                value={otp} // Controlled input for OTP
-                                onChange={(e) => setOtp(e.target.value)} // Update OTP state on change
-                                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-gray-200
+                                         text-sm sm:text-base
                                          focus:ring-2 focus:ring-indigo-500 focus:border-transparent
                                          transition-colors"
                                 required
@@ -107,8 +108,9 @@ export default function VerifyOTP() {
 
                         <button
                             type="submit"
-                            disabled={loading} // Disable button while loading
-                            className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg
+                            disabled={loading}
+                            className="w-full py-2 sm:py-3 px-4 bg-indigo-600 text-white rounded-lg
+                                     text-sm sm:text-base
                                      hover:bg-indigo-700 transition-colors flex items-center justify-center
                                      disabled:opacity-50 disabled:cursor-not-allowed"
                         >
